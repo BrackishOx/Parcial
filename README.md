@@ -1,5 +1,7 @@
 # INTEGRANTES
-Santiago cespedes daza, Diana katerine
+Santiago Alejandro Cespedes
+David Andres Castellanos
+Diana Katerine Acosta
 
 
 # 1 punto
