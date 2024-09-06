@@ -85,21 +85,20 @@ main = print (sortStudents studentGrades)
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
-// Definición de la estructura del estudiante (inmutable)
 typedef struct {
-    const char *nombre;
-    const char *apellido;
+    char *nombre;
+    char *apellido;
     unsigned int edad;
-    const char *ID;
-    const int *calificaciones;
+    char *ID;
+    int *calificaciones;
     size_t num_calificaciones;
 } Estudiante;
 
-// Función para crear un nuevo estudiante (devuelve una estructura inmutable)
-Estudiante *crear_estudiante(const char *nombre, const char *apellido, unsigned int edad, const char *ID, const int *calificaciones, size_t num_calificaciones) {
+Estudiante *crear_estudiante(const char *nombre, const char *apellido, unsigned int edad, const char *ID, int *calificaciones, size_t num_calificaciones) {
     Estudiante *nuevo_estudiante = (Estudiante *)malloc(sizeof(Estudiante));
-
+    
     if (nuevo_estudiante == NULL) {
         printf("Error al asignar memoria para el estudiante.\n");
         return NULL;
@@ -108,41 +107,40 @@ Estudiante *crear_estudiante(const char *nombre, const char *apellido, unsigned 
     nuevo_estudiante->nombre = strdup(nombre);
     nuevo_estudiante->apellido = strdup(apellido);
     nuevo_estudiante->ID = strdup(ID);
-
+    
     if (nuevo_estudiante->nombre == NULL || nuevo_estudiante->apellido == NULL || nuevo_estudiante->ID == NULL) {
         printf("Error al asignar memoria para los campos de texto.\n");
         free(nuevo_estudiante);
         return NULL;
     }
 
+    nuevo_estudiante->edad = edad;
     nuevo_estudiante->calificaciones = (int *)malloc(num_calificaciones * sizeof(int));
     if (nuevo_estudiante->calificaciones == NULL) {
         printf("Error al asignar memoria para las calificaciones.\n");
-        free((void*)nuevo_estudiante->nombre);
-        free((void*)nuevo_estudiante->apellido);
-        free((void*)nuevo_estudiante->ID);
+        free(nuevo_estudiante->nombre);
+        free(nuevo_estudiante->apellido);
+        free(nuevo_estudiante->ID);
         free(nuevo_estudiante);
         return NULL;
     }
 
-    memcpy((int*)nuevo_estudiante->calificaciones, calificaciones, num_calificaciones * sizeof(int));
+    memcpy(nuevo_estudiante->calificaciones, calificaciones, num_calificaciones * sizeof(int));
     nuevo_estudiante->num_calificaciones = num_calificaciones;
 
     return nuevo_estudiante;
 }
 
-// Función para liberar la memoria de un estudiante
-void liberar_estudiante(const Estudiante *estudiante) {
+void liberar_estudiante(Estudiante *estudiante) {
     if (estudiante != NULL) {
-        free((void*)estudiante->nombre);
-        free((void*)estudiante->apellido);
-        free((void*)estudiante->ID);
-        free((void*)estudiante->calificaciones);
-        free((void*)estudiante);
+        free(estudiante->nombre);
+        free(estudiante->apellido);
+        free(estudiante->ID);
+        free(estudiante->calificaciones);
+        free(estudiante);
     }
 }
 
-// Función para imprimir la información de un estudiante
 void imprimir_estudiante(const Estudiante *estudiante) {
     if (estudiante != NULL) {
         printf("Nombre: %s %s\n", estudiante->nombre, estudiante->apellido);
@@ -156,39 +154,34 @@ void imprimir_estudiante(const Estudiante *estudiante) {
     }
 }
 
-// Función funcional para modificar calificaciones (crea un nuevo estudiante con los cambios)
-Estudiante *modificar_calificaciones(const Estudiante *estudiante, const int *nuevas_calificaciones, size_t num_calificaciones) {
-    return crear_estudiante(estudiante->nombre, estudiante->apellido, estudiante->edad, estudiante->ID, nuevas_calificaciones, num_calificaciones);
+size_t calcular_memoria_usada(const Estudiante *estudiante) {
+    return sizeof(Estudiante) + 
+           (estudiante->nombre ? strlen(estudiante->nombre) + 1 : 0) + 
+           (estudiante->apellido ? strlen(estudiante->apellido) + 1 : 0) + 
+           (estudiante->ID ? strlen(estudiante->ID) + 1 : 0) + 
+           estudiante->num_calificaciones * sizeof(int);
 }
 
 int main() {
     int calificaciones[] = {85, 90, 78};
     size_t num_calificaciones = sizeof(calificaciones) / sizeof(calificaciones[0]);
 
+    clock_t inicio = clock();
+
     Estudiante *estudiante = crear_estudiante("Carlos", "Gomez", 20, "12345678", calificaciones, num_calificaciones);
 
     if (estudiante != NULL) {
         imprimir_estudiante(estudiante);
 
-        // Calcular y mostrar el uso de memoria
-        size_t memoria_usada = sizeof(Estudiante) + 
-                               strlen(estudiante->nombre) + 1 + 
-                               strlen(estudiante->apellido) + 1 + 
-                               strlen(estudiante->ID) + 1 + 
-                               num_calificaciones * sizeof(int);
-
+        size_t memoria_usada = calcular_memoria_usada(estudiante);
         printf("Memoria utilizada: %zu bytes\n", memoria_usada);
 
-        // Modificar calificaciones creando un nuevo estudiante (sin modificar el original)
-        int nuevas_calificaciones[] = {95, 100, 88};
-        Estudiante *nuevo_estudiante = modificar_calificaciones(estudiante, nuevas_calificaciones, num_calificaciones);
-        printf("\nEstudiante después de modificar calificaciones (funcional):\n");
-        imprimir_estudiante(nuevo_estudiante);
-
-        // Liberar memoria
         liberar_estudiante(estudiante);
-        liberar_estudiante(nuevo_estudiante);
     }
+
+    clock_t fin = clock();
+    double tiempo_cpu = ((double) (fin - inicio)) / CLOCKS_PER_SEC;
+    printf("Tiempo de ejecución: %f segundos\n", tiempo_cpu);
 
     return 0;
 }
