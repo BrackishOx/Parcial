@@ -1,6 +1,5 @@
 # INTEGRANTES
-Santiago cespedes daza 
-Diana katerine
+Santiago cespedes daza, Diana katerine
 
 
 # 1 punto
