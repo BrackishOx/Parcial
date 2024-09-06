@@ -79,7 +79,7 @@ main = print (sortStudents studentGrades)
 ```
 
 # 3 punto
-similar al ejemplo original pero con algunas mejoras:
+Similar al ejemplo original pero con algunas mejoras:
 
 Uso de strdup para simplificar la asignación de memoria para strings.
 Uso de memcpy para copiar las calificaciones.
