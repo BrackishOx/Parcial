@@ -77,3 +77,119 @@ studentGrades = [("Juan", 85), ("María", 90), ("Pedro", 80), ("Ana", 90), ("Lui
 main :: IO ()
 main = print (sortStudents studentGrades)
 ```
+
+# 3 punto
+
+
+```
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Definición de la estructura del estudiante (inmutable)
+typedef struct {
+    const char *nombre;
+    const char *apellido;
+    unsigned int edad;
+    const char *ID;
+    const int *calificaciones;
+    size_t num_calificaciones;
+} Estudiante;
+
+// Función para crear un nuevo estudiante (devuelve una estructura inmutable)
+Estudiante *crear_estudiante(const char *nombre, const char *apellido, unsigned int edad, const char *ID, const int *calificaciones, size_t num_calificaciones) {
+    Estudiante *nuevo_estudiante = (Estudiante *)malloc(sizeof(Estudiante));
+
+    if (nuevo_estudiante == NULL) {
+        printf("Error al asignar memoria para el estudiante.\n");
+        return NULL;
+    }
+
+    nuevo_estudiante->nombre = strdup(nombre);
+    nuevo_estudiante->apellido = strdup(apellido);
+    nuevo_estudiante->ID = strdup(ID);
+
+    if (nuevo_estudiante->nombre == NULL || nuevo_estudiante->apellido == NULL || nuevo_estudiante->ID == NULL) {
+        printf("Error al asignar memoria para los campos de texto.\n");
+        free(nuevo_estudiante);
+        return NULL;
+    }
+
+    nuevo_estudiante->calificaciones = (int *)malloc(num_calificaciones * sizeof(int));
+    if (nuevo_estudiante->calificaciones == NULL) {
+        printf("Error al asignar memoria para las calificaciones.\n");
+        free((void*)nuevo_estudiante->nombre);
+        free((void*)nuevo_estudiante->apellido);
+        free((void*)nuevo_estudiante->ID);
+        free(nuevo_estudiante);
+        return NULL;
+    }
+
+    memcpy((int*)nuevo_estudiante->calificaciones, calificaciones, num_calificaciones * sizeof(int));
+    nuevo_estudiante->num_calificaciones = num_calificaciones;
+
+    return nuevo_estudiante;
+}
+
+// Función para liberar la memoria de un estudiante
+void liberar_estudiante(const Estudiante *estudiante) {
+    if (estudiante != NULL) {
+        free((void*)estudiante->nombre);
+        free((void*)estudiante->apellido);
+        free((void*)estudiante->ID);
+        free((void*)estudiante->calificaciones);
+        free((void*)estudiante);
+    }
+}
+
+// Función para imprimir la información de un estudiante
+void imprimir_estudiante(const Estudiante *estudiante) {
+    if (estudiante != NULL) {
+        printf("Nombre: %s %s\n", estudiante->nombre, estudiante->apellido);
+        printf("Edad: %u\n", estudiante->edad);
+        printf("ID: %s\n", estudiante->ID);
+        printf("Calificaciones: ");
+        for (size_t i = 0; i < estudiante->num_calificaciones; i++) {
+            printf("%d ", estudiante->calificaciones[i]);
+        }
+        printf("\n");
+    }
+}
+
+// Función funcional para modificar calificaciones (crea un nuevo estudiante con los cambios)
+Estudiante *modificar_calificaciones(const Estudiante *estudiante, const int *nuevas_calificaciones, size_t num_calificaciones) {
+    return crear_estudiante(estudiante->nombre, estudiante->apellido, estudiante->edad, estudiante->ID, nuevas_calificaciones, num_calificaciones);
+}
+
+int main() {
+    int calificaciones[] = {85, 90, 78};
+    size_t num_calificaciones = sizeof(calificaciones) / sizeof(calificaciones[0]);
+
+    Estudiante *estudiante = crear_estudiante("Carlos", "Gomez", 20, "12345678", calificaciones, num_calificaciones);
+
+    if (estudiante != NULL) {
+        imprimir_estudiante(estudiante);
+
+        // Calcular y mostrar el uso de memoria
+        size_t memoria_usada = sizeof(Estudiante) + 
+                               strlen(estudiante->nombre) + 1 + 
+                               strlen(estudiante->apellido) + 1 + 
+                               strlen(estudiante->ID) + 1 + 
+                               num_calificaciones * sizeof(int);
+
+        printf("Memoria utilizada: %zu bytes\n", memoria_usada);
+
+        // Modificar calificaciones creando un nuevo estudiante (sin modificar el original)
+        int nuevas_calificaciones[] = {95, 100, 88};
+        Estudiante *nuevo_estudiante = modificar_calificaciones(estudiante, nuevas_calificaciones, num_calificaciones);
+        printf("\nEstudiante después de modificar calificaciones (funcional):\n");
+        imprimir_estudiante(nuevo_estudiante);
+
+        // Liberar memoria
+        liberar_estudiante(estudiante);
+        liberar_estudiante(nuevo_estudiante);
+    }
+
+    return 0;
+}
+```
