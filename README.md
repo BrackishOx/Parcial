@@ -79,7 +79,21 @@ main = print (sortStudents studentGrades)
 ```
 
 # 3 punto
+similar al ejemplo original pero con algunas mejoras:
 
+Uso de strdup para simplificar la asignación de memoria para strings.
+Uso de memcpy para copiar las calificaciones.
+Función separada calcular_memoria_usada para calcular la memoria utilizada.
+Medición del tiempo de ejecución usando clock().
+
+Gestión de memoria: En C, la gestión de memoria es manual. Usamos malloc para asignar memoria y free para liberarla. En Haskell, la gestión de memoria es automática.
+Mutabilidad: En C, los datos son mutables por defecto. En Haskell, los datos son inmutables.
+Manejo de errores: En C, manejamos los errores de asignación de memoria explícitamente. En Haskell, el manejo de errores es más elegante con el uso de tipos como Maybe o Either.
+Rendimiento: El código C probablemente será más rápido y usará menos memoria, pero esto dependerá de la implementación específica y el caso de uso.
+Seguridad: El código C es más propenso a errores como desbordamientos de búfer o fugas de memoria. Haskell proporciona más seguridad en este aspecto.
+Concisión: El código Haskell es generalmente más conciso y declarativo.
+
+Para una comparación precisa de rendimiento, necesitaríamos ejecutar ambas implementaciones en el mismo hardware con conjuntos de datos comparables. En general, esperaríamos que la versión en C sea más rápida y use menos memoria, pero la versión en Haskell sería más segura y fácil de mantener.
 
 ```
 #include <stdio.h>
