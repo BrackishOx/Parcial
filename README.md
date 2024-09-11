@@ -85,8 +85,6 @@ main = print (sortStudents studentGrades)
 ```
 
 # 3 punto
-Similar al ejemplo original pero con algunas mejoras:
-
 Uso de strdup para simplificar la asignación de memoria para strings.
 Uso de memcpy para copiar las calificaciones.
 Función separada calcular_memoria_usada para calcular la memoria utilizada.
