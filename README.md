@@ -99,7 +99,7 @@ Rendimiento: El código C probablemente será más rápido y usará menos memori
 Seguridad: El código C es más propenso a errores como desbordamientos de búfer o fugas de memoria. Haskell proporciona más seguridad en este aspecto.
 Concisión: El código Haskell es generalmente más conciso y declarativo.
 
-Para una comparación precisa de rendimiento, necesitaríamos ejecutar ambas implementaciones en el mismo hardware con conjuntos de datos comparables. En general, esperaríamos que la versión en C sea más rápida y use menos memoria, pero la versión en Haskell sería más segura y fácil de mantener.
+En general, esperaríamos que la versión en C sea más rápida y use menos memoria, pero la versión en Haskell sería más segura y fácil de mantener.
 
 ```
 #include <stdio.h>
